@@ -44,18 +44,18 @@ class EscolaDB:
     # ------------------------CRUD RELACOES-------------------------------
 
     def createRelacao(self, campoBuscaProfessor, valorBuscaProfessor, campoBuscaMateria, valorBuscaMateria, ano):
-        query = "MATCH (p:Professor{" + campoBuscaProfessor + ": \"" + valorBuscaProfessor + "\"})"
-        query = query + "MATCH (m:Materia{" + campoBuscaMateria + ": \"" + valorBuscaMateria + "\"})"
+        query = "MATCH (p:Professor{" + campoBuscaProfessor + ": \"" + valorBuscaProfessor + "\"}), "
+        query = query + "(m:Materia{" + campoBuscaMateria + ": \"" + valorBuscaMateria + "\"}) "
         query = query + "CREATE(p)-[:LECIONA{desde:\"" + ano + "\"}]->(m)"
         self.db.execute_query(query)
 
     def retriveRelacaoBuscaProfessor(self, campoBuscaProfessor, valorBuscaProfessor):
-        query = "MATCH(p:Professor{\"" + campoBuscaProfessor + "\": \"" + valorBuscaProfessor + "\"})-[r:LECIONA]->(m:Materia)"
+        query = "MATCH(p:Professor{" + campoBuscaProfessor + ": \"" + valorBuscaProfessor + "\"})-[r:LECIONA]->(m:Materia) "
         query = query + "RETURN r"
         self.db.execute_query(query)
 
     def retriveRelacaoBuscaMateria(self, campoBuscaMateria, valorBuscaMateria):
-        query = "MATCH(p:Professor)-[r:LECIONA]->(m:Materia{\"" + campoBuscaMateria + "\": \"" + valorBuscaMateria + "\"})"
+        query = "MATCH(p:Professor)-[r:LECIONA]->(m:Materia{" + campoBuscaMateria + ": \"" + valorBuscaMateria + "\"}) "
         query = query + "RETURN r"
         self.db.execute_query(query)
 
@@ -65,18 +65,18 @@ class EscolaDB:
         self.db.execute_query(query)
 
     def updateRelacaoBuscaProfessor(self, campoBuscaProfessor, valorBuscaProfessor, ano):
-        query = "MATCH(p:Professor{\"" + campoBuscaProfessor + "\": \"" + valorBuscaProfessor + "\"})-[r:LECIONA]->(m:Materia)"
+        query = "MATCH(p:Professor{" + campoBuscaProfessor + ": \"" + valorBuscaProfessor + "\"})-[r:LECIONA]->(m:Materia) "
         query = query + "SET r.desde = \"" + ano + "\""
         self.db.execute_query(query)
 
     def updateRelacaoBuscaMateria(self, campoBuscaMateria, valorBuscaMateria, ano):
-        query = "MATCH(p:Professor)-[r:LECIONA]->(m:Materia{\"" + campoBuscaMateria + "\": \"" + valorBuscaMateria + "\"})"
+        query = "MATCH(p:Professor)-[r:LECIONA]->(m:Materia{" + campoBuscaMateria + ": \"" + valorBuscaMateria + "\"}) "
         query = query + "SET r.desde = \"" + ano + "\""
         self.db.execute_query(query)
 
-    def updateRelacaoBuscaAno(self, ano):
-        query = "MATCH(p:Professor)-[r:LECIONA{desde:\"" + ano + "\"}]->(m:Materia)"
-        query = query + "SET r.desde = \"" + ano + "\""
+    def updateRelacaoBuscaAno(self, oldAno, newAno):
+        query = "MATCH(p:Professor)-[r:LECIONA{desde:\"" + oldAno + "\"}]->(m:Materia) "
+        query = query + "SET r.desde = \"" + newAno + "\""
         self.db.execute_query(query)
 
     def deleteRelacao(self, ano):
